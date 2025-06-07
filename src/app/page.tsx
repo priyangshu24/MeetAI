@@ -58,7 +58,7 @@ export default function Home() {
               </svg>
             </div>
             <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome back!</h2>
-            <p className="text-gray-600">You're successfully logged in</p>
+            <p className="text-gray-600">You successfully logged in</p>
           </div>
           
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
