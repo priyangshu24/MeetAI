@@ -99,7 +99,7 @@ export const SignInView = () => {
             <form onSubmit={form.handleSubmit(onSubmit)} className="p-8 md:p-12">
               <div className="flex flex-col gap-8">
                 <div className="flex flex-col items-center text-center space-y-3">
-                  <div className="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-2xl flex items-center justify-center mb-2">
+                  <div className="w-16 h-16 bg-radial from-sidebar-accent to-sidebar rounded-2xl flex items-center justify-center mb-2">
                     <img src="/logo.svg" alt="Meet AI Logo" className="h-10 w-10" />
                   </div>
                   <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
@@ -221,8 +221,8 @@ export const SignInView = () => {
             </form>
           </Form>
 
-          <div className="bg-gradient-to-br from-green-500 via-green-600 to-green-800 relative hidden md:flex flex-col items-center justify-center p-12">
-            <div className="absolute inset-0 bg-black opacity-10"></div>
+          <div className="bg-radial from-sidebar-accent to-sidebar relative hidden md:flex flex-col items-center justify-center p-12">
+            {/* <div className="absolute inset-0 bg-black opacity-10"></div> */}
             <div className="relative z-10 flex flex-col items-center justify-center h-full space-y-8">
               <div className="w-32 h-32 bg-white/20 backdrop-blur-sm rounded-3xl flex items-center justify-center">
                 <img src="/logo.svg" alt="Meet AI Logo" className="h-16 w-16" />
