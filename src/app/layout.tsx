@@ -5,6 +5,11 @@ import "./globals.css";
 const inter = Inter({
   subsets: ["latin"],
 });
+/**
+ * Defines the root layout for the application, applying the Inter font and antialiasing to all content.
+ *
+ * @param children - The content to be rendered within the layout.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
