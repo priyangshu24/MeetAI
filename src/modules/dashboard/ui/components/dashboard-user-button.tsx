@@ -69,27 +69,21 @@ export const DashboardUserButton = () => {
           </div>
           <ChevronDownIcon className="size-4 shrink-0" />
         </DrawerTrigger>
-        <DrawerContent >
-            <DrawerHeader>
-                <DrawerTitle>{data.user.name}</DrawerTitle>
-                <DrawerDescription>{data.user.email}</DrawerDescription>
-            </DrawerHeader> 
-            <DrawerFooter>
-                <Button
-                variant="outline"
-                onClick={()=>{}}
-                >
-                    <CreditCardIcon className="size-4 text-black"/>
-                    Billing
-                </Button>
-                <Button
-                variant="outline"
-                onClick={onLogout}
-                >
-                    <LogOutIcon className="size-4 text-black"/>
-                    Logout
-                </Button>
-            </DrawerFooter>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>{data.user.name}</DrawerTitle>
+            <DrawerDescription>{data.user.email}</DrawerDescription>
+          </DrawerHeader>
+          <DrawerFooter>
+            <Button variant="outline" onClick={() => {}}>
+              <CreditCardIcon className="size-4 text-black" />
+              Billing
+            </Button>
+            <Button variant="outline" onClick={onLogout}>
+              <LogOutIcon className="size-4 text-black" />
+              Logout
+            </Button>
+          </DrawerFooter>
         </DrawerContent>
       </Drawer>
     );
