@@ -9,6 +9,7 @@ import { ErrorState } from "@/components/error-state";
 export const AgentsView = () => {
     const trpc = useTRPC();
     const { data } = useSuspenseQuery(trpc.agent.getMany.queryOptions());
+    
     return (
         <div>
             {JSON.stringify(data, null, 2)}
