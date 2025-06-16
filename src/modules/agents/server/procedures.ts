@@ -21,10 +21,11 @@ export const agentRouter = createTRPCRouter({
 
         return existingAgent;
     }),
-    getMany: protectedProcedure.query(async () =>{
+    getMany: protectedProcedure.query(async ({ ctx }) =>{
         const data = await db
            .select()
-           .from(agents);
+           .from(agents)
+           .where(eq(agents.userId, ctx.auth.user.id));
         return data;
     }),
     create: protectedProcedure
