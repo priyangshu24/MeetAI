@@ -22,7 +22,7 @@ export const MeetingsListHeader = () => {
           <h5 className="font-medium text-xl">My Meetings</h5>
           <Button onClick={() => setIsDialogOpen(true)}>
             <PlusIcon />
-            New Agent
+            New Meeting
           </Button>
         </div>
         <div className="flex item-center gap-x-2 p-1">
