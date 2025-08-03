@@ -15,6 +15,7 @@ import {
   MAX_PAGE_SIZE,
   MIN_PAGE_SIZE,
 } from "@/constants";
+import { MeetingStatus } from "../types";
 
 
 export const meetingsRouter = createTRPCRouter({
@@ -90,11 +91,21 @@ export const meetingsRouter = createTRPCRouter({
           .max(MAX_PAGE_SIZE)
           .default(DEFAULT_PAGE_SIZE),
         search: z.string().nullish(),
+        agentId : z.string().nullish(),
+        status: z
+          .enum([
+            MeetingStatus.Upcoming,
+            MeetingStatus.Active,
+            MeetingStatus.Completed,
+            MeetingStatus.Cancelled,
+            MeetingStatus.Processing, 
+          ])
+          .nullish(),
       })
     )
 
     .query(async ({ ctx, input }) => {
-      const { search, page, pageSize } = input;
+      const { search, page, pageSize, agentId, status } = input;
       const data = await db
         .select({
           ...getTableColumns(meetings),
@@ -108,7 +119,9 @@ export const meetingsRouter = createTRPCRouter({
         .where(
           and(
             eq(meetings.userId, ctx.auth.user.id),
-            search ? ilike(meetings.name, `%${search}%`) : undefined
+            search ? ilike(meetings.name, `%${search}%`) : undefined,
+            agentId ? eq(meetings.agentId, agentId) : undefined,
+            status ? eq(meetings.status, status) : undefined
           )
         )
         .orderBy(desc(meetings.createdAt), desc(meetings.id))
