@@ -10,7 +10,8 @@ import { EmptyState } from "@/components/empty-state";
 
 export const MeetingsView = () => {
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.meetings.getMany.queryOptions({}));
+  const { data } = useSuspenseQuery(trpc.meetings.getMany.queryOptions({
+  }));
   return (
     <div className="flex-1 pb-4 mb:px-8 flex flex-col gap-y-4">
       <DataTable data={data.items} columns={columns} />
