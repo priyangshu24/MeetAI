@@ -1,9 +1,8 @@
 "use client";
 
-import { format } from "date-fns"; // fixed typo: was "data-fns"
+import { format } from "date-fns";
 import humanizeDuration from "humanize-duration";
 import { ColumnDef } from "@tanstack/react-table";
-
 import {
   CircleCheckIcon,
   CircleXIcon,
@@ -12,12 +11,11 @@ import {
   CornerDownRightIcon,
   LoaderIcon,
 } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { MeetingGetMany } from "../../types";
 import { GeneratedAvatar } from "@/components/generated-avatar";
 import { Badge } from "@/components/ui/badge";
-
+import { useRouter } from "next/navigation"; // <-- Add this import
 
 function formatDuration(seconds: number) {
   return humanizeDuration(seconds * 1000, {
@@ -46,32 +44,37 @@ export const columns: ColumnDef<MeetingGetMany[number]>[] = [
   {
     accessorKey: "name",
     header: "Meeting Name",
-    cell: ({ row }) => (
-      <div className="flex flex-col gap-y-1">
-        <span className="font-semibold capitalize">{row.original.name}</span>
-        <div className="flex items-center gap-x-2">
-          <CornerDownRightIcon className="size-3 text-muted-foreground" />
-          <span className="text-sm text-muted-foreground max-w-[200px] truncate capitalize">
-            {row.original.agent.name}
+    cell: function ClickableMeetingCell({ row }) {
+      const router = useRouter();
+      return (
+        <div
+          className="flex flex-col gap-y-1 cursor-pointer hover:bg-gray-100 rounded p-2"
+          onClick={() => router.push(`/meetings/${row.original.id}`)}
+          title="View meeting details"
+        >
+          <span className="font-semibold capitalize">{row.original.name}</span>
+          <div className="flex items-center gap-x-2">
+            <CornerDownRightIcon className="size-3 text-muted-foreground" />
+            <span className="text-sm text-muted-foreground max-w-[200px] truncate capitalize">
+              {row.original.agent.name}
+            </span>
+          </div>
+          <GeneratedAvatar
+            variant="botttsNetural"
+            seed={row.original.agent.name}
+            className="size-4"
+          />
+          <span>
+            {row.original.startedAt ? format(row.original.startedAt, "MMM d") : ""}
           </span>
         </div>
-        <GeneratedAvatar
-          variant="botttsNetural"
-          seed={row.original.agent.name}
-          className="size-4"
-        />
-        <span>
-          {row.original.startedAt ? format(row.original.startedAt, "MMM d") : ""}
-        </span>
-      </div>
-    ),
+      );
+    },
   },
   {
     accessorKey: "status",
     header: "Status",
     cell: ({ row }) => {
-      // Fix: Extract status type casting to avoid repeated type assertions
-      // This resolves the "Argument of type '{}' is not assignable" error on line 291
       const status = row.original.status as keyof typeof statusIconMap;
       const Icon = statusIconMap[status];
 
