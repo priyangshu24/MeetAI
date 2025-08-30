@@ -4,5 +4,6 @@ const Page = () => {
             Meetings Id Page
         </div>
     );
-};
-export default Page;
+}
+
+export default Page
