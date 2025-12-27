@@ -7,6 +7,8 @@ import { GeneratedAvatar } from "@/components/generated-avatar";
 
 import { useMeetingsFilters } from "../../hooks/use-meetings-filters";
 
+import { DEFAULT_PAGE } from "@/constants";
+
 export const AgentIdFilter = () => {
     const [filters, setFilters] = useMeetingsFilters();
 
@@ -37,7 +39,7 @@ export const AgentIdFilter = () => {
                 </div>
             ),
             }))}
-            onSelect={(value) => setFilters({ agentId: value})}
+            onSelect={(value) => setFilters({ agentId: value, page: DEFAULT_PAGE})}
             onSearch={setAgentSearch}
             value={filters.agentId ?? ""}
         />

@@ -13,13 +13,16 @@ export const DataPagination = ({
     onPageChange,
 }: Props)=>{
     return(
-        <div className="flex item-center justify-between">
-            <div className="flex-1 text-sm text-muted-foreground">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-y-2">
+            <div className="text-sm text-muted-foreground">
                 Page {page} of {totalPages || 1}
             </div>
-            <div className="flex item-center justify-center space-x-2 py-4">
+            <div className="flex items-center justify-center space-x-2 py-4">
                 <Button
+                  variant="outline"
+                  size="sm"
                   disabled={page === 1} 
+                  onClick={()=> onPageChange(Math.max(1, page - 1))}
                 >
                   Previous
                 </Button>

@@ -8,12 +8,8 @@ import { MeetingsSearchFilter } from "./meetings-search-filter";
 import { StatusFilter } from "./status-filter";
 import { AgentIdFilter } from "./agent-id-filter";
 import { useMeetingsFilters } from "../../hooks/use-meetings-filters";
-import { ScrollArea } from "@radix-ui/react-scroll-area";
-import { ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { DEFAULT_PAGE } from "@/constants";
-
-
-
 
 export const MeetingsListHeader = () => { 
   const [filters, setFilters] = useMeetingsFilters();
@@ -37,15 +33,15 @@ export const MeetingsListHeader = () => {
 
 
       <div className="py-4 px-4 md:px-8 flex flex-col gap-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-y-4">
           <h5 className="font-medium text-xl">My Meetings</h5>
-          <Button onClick={() => setIsDialogOpen(true)}>
+          <Button onClick={() => setIsDialogOpen(true)} className="w-full sm:w-auto">
             <PlusIcon />
             New Meeting
           </Button>
         </div>
-        <ScrollArea>
-        <div className="flex item-center gap-x-2 p-1">
+        <ScrollArea className="w-full whitespace-nowrap">
+        <div className="flex items-center gap-x-2 p-1">
             <MeetingsSearchFilter />
             <StatusFilter/> 
             <AgentIdFilter />

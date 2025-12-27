@@ -1,3 +1,4 @@
+import { DEFAULT_PAGE } from '@/constants';
 import {
     CircleXIcon,
     CircleCheckIcon,
@@ -65,6 +66,7 @@ const options = [
         ),
     },
 ];
+
 export const StatusFilter = () => {
     const [filters, setFilters] = useMeetingsFilters();
     return (
@@ -72,7 +74,7 @@ export const StatusFilter = () => {
             placeholder='Filter by status'
             className='h-9'
             options={options}
-            onSelect={(value) => setFilters({ status: value as MeetingStatus})}
+            onSelect={(value) => setFilters({ status: value as MeetingStatus, page: DEFAULT_PAGE})}
             value={filters.status ?? ""}
         />
     );

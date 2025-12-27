@@ -121,7 +121,7 @@ export const MeetingForm = ({
             {/* <GeneratedAvatar 
              seed={form.watch("name")}
              variant="botttsNetural"
-             className="border size-16"
+             className="border size-16" 
              /> */}
             <FormField 
               name="name"
