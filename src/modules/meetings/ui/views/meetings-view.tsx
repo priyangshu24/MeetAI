@@ -8,14 +8,27 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { columns } from "../components/columns";
 import { EmptyState } from "@/components/empty-state";
 
+import { useMeetingsFilters } from "../../hooks/use-meetings-filters";
+import { DataPagination } from "@/modules/agents/ui/components/data-pagination";
+
 export const MeetingsView = () => {
+  const [filters, setFilters] = useMeetingsFilters();
   const trpc = useTRPC();
   const { data } = useSuspenseQuery(trpc.meetings.getMany.queryOptions({
+    ...filters,
   }));
   return (
-    <div className="flex-1 pb-4 mb:px-8 flex flex-col gap-y-4">
-      <DataTable data={data.items} columns={columns} />
-      {data.items.length === 0 && (
+    <div className="flex-1 pb-4 px-4 md:px-8 flex flex-col gap-y-4">
+      {data.items.length > 0 ? (
+        <>
+          <DataTable data={data.items} columns={columns} />
+          <DataPagination
+            page={filters.page}
+            totalPages={data.totalPages}
+            onPageChange={(page) => setFilters({ page })}
+          />
+        </>
+      ) : (
         <EmptyState
           title="Create your first meeting"
           description="Meetings are the building blocks of your AI. Create your first meeting to get started."

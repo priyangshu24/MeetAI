@@ -113,7 +113,7 @@ export const meetingsRouter = createTRPCRouter({
         page: z.number().default(DEFAULT_PAGE),
         pageSize: z
           .number()
-          .min(MIN_PAGE_SIZE)
+          .min(MIN_PAGE_SIZE)  
           .max(MAX_PAGE_SIZE)
           .default(DEFAULT_PAGE_SIZE),
         search: z.string().nullish(),
@@ -161,7 +161,9 @@ export const meetingsRouter = createTRPCRouter({
         .where(
           and(
             eq(meetings.userId, ctx.auth.user.id),
-            search ? ilike(meetings.name, `%${search}%`) : undefined
+            search ? ilike(meetings.name, `%${search}%`) : undefined,
+            agentId ? eq(meetings.agentId, agentId) : undefined,
+            status ? eq(meetings.status, status) : undefined
           )
         );
 
