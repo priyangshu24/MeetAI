@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { pgTable, text, timestamp, boolean, pgEnum } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, pgEnum, real } from "drizzle-orm/pg-core";
 
 //user table schema
 export const user = pgTable("user", {
@@ -62,10 +62,16 @@ export const agents = pgTable("agents", {
     .primaryKey()
     .$defaultFn(() => nanoid()),
     name: text('name').notNull(),
+    description: text('description').notNull(),
     userId: text("user_id")
         .notNull()
         .references(()=> user.id, { onDelete: 'cascade' }),
     instructions: text("instruction").notNull(),
+    model: text("model").notNull().default("gpt-4"),
+    capabilityVoice: boolean("capability_voice").notNull().default(false),
+    capabilityChat: boolean("capability_chat").notNull().default(true),
+    capabilityVision: boolean("capability_vision").notNull().default(false),
+    temperature: real("temperature").notNull().default(0.7),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow()
 });

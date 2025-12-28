@@ -54,10 +54,10 @@ export const MeetingForm = ({
   );
 
   const createMeeting = useMutation(
-    trpc.meetings.create.mutationOptions({
+    trpc.meeting.create.mutationOptions({
       onSuccess: async(data) => {
         await queryClient.invalidateQueries(
-          trpc.meetings.getMany.queryOptions({}),
+          trpc.meeting.getMany.queryOptions({}),
         )
         //TODO: Invalidate free tier usage
 
@@ -72,15 +72,15 @@ export const MeetingForm = ({
   );
 
   const UpdateMeeting = useMutation(
-    trpc.meetings.update.mutationOptions({
+    trpc.meeting.update.mutationOptions({
       onSuccess: async() => {
         await queryClient.invalidateQueries(
-          trpc.meetings.getMany.queryOptions({}),
+          trpc.meeting.getMany.queryOptions({}),
         )
 
         if(initialValues?.id){
             await queryClient.invalidateQueries(
-                trpc.meetings.getOne.queryOptions({ id: initialValues.id }),
+                trpc.meeting.getOne.queryOptions({ id: initialValues.id }),
             )
         }
 
@@ -164,15 +164,19 @@ export const MeetingForm = ({
                         placeholder="Select an agent"
                         />
                     </FormControl>
-                    <FormDescription>
+                    <FormDescription className="text-xs mt-1 flex items-center gap-1">
                       Not found what you&apos;re looking for?{" "}
-                      <button
-                       type="button"
-                       className="text-primary hover:underline"
-                       onClick={()=> setOpenNewAgentDialog(true)}
+                      <Button
+                        type="button"
+                        variant="link"
+                        className="text-primary p-0 h-auto font-normal"
+                        onClick={() => {
+                          console.log("Opening new agent dialog...");
+                          setOpenNewAgentDialog(true);
+                        }}
                       >
                         Create new agent
-                      </button>
+                      </Button>
                     </FormDescription>
                     <FormMessage />
                 </FormItem>
