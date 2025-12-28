@@ -31,23 +31,27 @@ export const DashboardNavbar = () => {
   return (
     <>
       <DashboardCommand open={commandOpen} setOpen={setCommandOpen} />
-      <nav className="flex px-4 gap-x-2 items-center py-3 border-b bg-background">
-        <Button className="size-9" variant="outline" onClick={toggleSidebar}>
+      <nav className="flex px-6 gap-x-4 items-center py-4 glass sticky top-0 z-50 border-t-0 border-x-0">
+        <Button 
+          className="size-10 rounded-xl hover:bg-primary/5 hover:text-primary transition-all duration-200" 
+          variant="outline" 
+          onClick={toggleSidebar}
+        >
           {state === "collapsed" || isMobile ? (
-            <PanelLeftIcon className="size-4" />
+            <PanelLeftIcon className="size-5" />
           ) : (
-            <PanelLeftCloseIcon className="size-4" />
+            <PanelLeftCloseIcon className="size-5" />
           )}
         </Button>
         <Button
           variant="outline"
           size="sm"
-          className="h-9 w-full sm:w-[240px] justify-start font-normal text-muted-foreground hover:text-muted-foreground"
+          className="h-10 w-full sm:w-[280px] justify-start font-medium text-muted-foreground hover:text-primary hover:bg-primary/5 hover:border-primary/20 transition-all duration-200 rounded-xl px-4"
           onClick={() => setCommandOpen((open) => !open)}
         >
           <SearchIcon className="size-4 mr-2" />
-          Search
-          <kbd className="ml-auto pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+          Search everything...
+          <kbd className="ml-auto pointer-events-none hidden sm:inline-flex h-6 select-none items-center gap-1 rounded-md border bg-muted px-2 font-mono text-[10px] font-bold text-muted-foreground">
             <span className="text-xs">
               {isMac ? "⌘" : "Ctrl"}
             </span>

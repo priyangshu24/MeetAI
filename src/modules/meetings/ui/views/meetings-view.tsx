@@ -14,7 +14,7 @@ import { DataPagination } from "@/modules/agents/ui/components/data-pagination";
 export const MeetingsView = () => {
   const [filters, setFilters] = useMeetingsFilters();
   const trpc = useTRPC();
-  const { data } = useSuspenseQuery(trpc.meetings.getMany.queryOptions({
+  const { data } = useSuspenseQuery(trpc.meeting.getMany.queryOptions({
     ...filters,
   }));
   return (

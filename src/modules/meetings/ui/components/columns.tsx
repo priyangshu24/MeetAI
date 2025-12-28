@@ -15,7 +15,29 @@ import { cn } from "@/lib/utils";
 import { MeetingGetMany } from "../../types";
 import { GeneratedAvatar } from "@/components/generated-avatar";
 import { Badge } from "@/components/ui/badge";
-import { useRouter } from "next/navigation"; // <-- Add this import
+import { useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { useTRPC } from "@/trpc/client";
+import { toast } from "sonner";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { MoreVerticalIcon, Trash2Icon, ExternalLinkIcon } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { useState } from "react";
 
 function formatDuration(seconds: number) {
   return humanizeDuration(seconds * 1000, {
@@ -33,11 +55,11 @@ const statusIconMap = {
 } as const;
 
 const statusColorMap = {
-  upcoming: "bg-yellow-500/20 text-yellow-800 border-yellow-800/5",
-  active: "bg-blue-500/20 text-blue-800 border-blue-800/5",
-  completed: "bg-green-500/20 text-green-800 border-green-800/5",
-  processing: "bg-purple-500/20 text-purple-800 border-purple-800/5",
-  cancelled: "bg-red-500/20 text-red-800 border-red-800/5",
+  upcoming: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-500 border-yellow-500/20",
+  active: "bg-blue-500/10 text-blue-600 dark:text-blue-500 border-blue-500/20",
+  completed: "bg-green-500/10 text-green-600 dark:text-green-500 border-green-500/20",
+  processing: "bg-purple-500/10 text-purple-600 dark:text-purple-500 border-purple-500/20",
+  cancelled: "bg-red-500/10 text-red-600 dark:text-red-500 border-red-500/20",
 } as const;
 
 export const columns: ColumnDef<MeetingGetMany[number]>[] = [
@@ -48,7 +70,7 @@ export const columns: ColumnDef<MeetingGetMany[number]>[] = [
       const router = useRouter();
       return (
         <div
-          className="flex flex-col gap-y-1 cursor-pointer hover:bg-gray-100 rounded p-2"
+          className="flex flex-col gap-y-1 cursor-pointer hover:bg-muted/50 transition-colors rounded-lg p-2 -m-2"
           onClick={() => router.push(`/meetings/${row.original.id}`)}
           title="View meeting details"
         >
@@ -100,18 +122,81 @@ export const columns: ColumnDef<MeetingGetMany[number]>[] = [
     accessorKey: "duration",
     header: "Duration",
     cell: ({ row }) => {
-      const duration =
-        typeof row.original.duration === "number"
-          ? row.original.duration
-          : undefined;
+      const duration = Number(row.original.duration);
       return (
-        <Badge
-          variant="outline"
-          className="capitalize [&>svg]:size-4 text-muted-foreground"
-        >
-          <ClockFadingIcon className="text-blue-700" />
-          {duration !== undefined ? formatDuration(duration) : "No Duration"}
-        </Badge>
+        <div className="flex items-center gap-x-2 text-muted-foreground tabular-nums">
+          <ClockFadingIcon className="size-4" />
+          {duration ? formatDuration(duration) : "0s"}
+        </div>
+      );
+    },
+  },
+  {
+    id: "actions",
+    cell: function ActionsCell({ row }) {
+      const trpc = useTRPC();
+      const router = useRouter();
+      const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+      const removeMutation = useMutation(
+        trpc.meeting.remove.mutationOptions({
+          onSuccess: () => {
+            toast.success("Meeting deleted");
+            router.refresh();
+          },
+          onError: () => {
+            toast.error("Failed to delete meeting");
+          },
+        })
+      );
+
+      return (
+        <>
+          <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. This will permanently delete the meeting
+                  and all associated data.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => removeMutation.mutate({ id: row.original.id })}
+                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                >
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="size-8">
+                <MoreVerticalIcon className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem 
+                onClick={() => router.push(`/meetings/${row.original.id}`)}
+                className="gap-x-2"
+              >
+                <ExternalLinkIcon className="size-4" />
+                View Details
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setIsDeleteDialogOpen(true)}
+                className="text-destructive focus:text-destructive gap-x-2"
+              >
+                <Trash2Icon className="size-4" />
+                Delete Meeting
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
       );
     },
   },

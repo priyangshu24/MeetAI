@@ -1,9 +1,9 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
-import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
+import { and, count, desc, eq, getTableColumns, ilike } from "drizzle-orm";
 
-import { agents } from "@/db/schema";
+import { agents, meetings } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
 
 import { agentsInertSchema, agentsUpdateSchema } from "../schemas";
@@ -20,7 +20,7 @@ export const agentRouter = createTRPCRouter({
   update: protectedProcedure
     .input(agentsUpdateSchema)
     .mutation(async ({ input, ctx }) => {
-      const [updatedAgent] = await db
+      await db
         .update(agents)
         .set(input)
         .where(
@@ -28,8 +28,20 @@ export const agentRouter = createTRPCRouter({
             eq(agents.id, input.id), 
             eq(agents.userId, ctx.auth.user.id)
           ),
+        );
+
+      const [updatedAgent] = await db
+        .select({
+          meetingCount: count(meetings.id),
+          ...getTableColumns(agents),
+        })
+        .from(agents)
+        .leftJoin(meetings, eq(agents.id, meetings.agentId))
+        .where(
+          and(eq(agents.id, input.id), eq(agents.userId, ctx.auth.user.id))
         )
-        .returning();
+        .groupBy(agents.id);
+
       if (!updatedAgent) {
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -61,14 +73,15 @@ export const agentRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const [existingAgent] = await db
         .select({
-          //TODO: Change to actual const
-          meetingCount: sql<number>`5`,
+          meetingCount: count(meetings.id),
           ...getTableColumns(agents),
         })
         .from(agents)
+        .leftJoin(meetings, eq(agents.id, meetings.agentId))
         .where(
           and(eq(agents.id, input.id), eq(agents.userId, ctx.auth.user.id))
-        );
+        )
+        .groupBy(agents.id);
 
       if (!existingAgent) {
         throw new TRPCError({
@@ -96,17 +109,18 @@ export const agentRouter = createTRPCRouter({
       const { search, page, pageSize } = input;
       const data = await db
         .select({
-          //TODO: Change to actual const
-          meetingCount: sql<number>`6`,
+          meetingCount: count(meetings.id),
           ...getTableColumns(agents),
         })
         .from(agents)
+        .leftJoin(meetings, eq(agents.id, meetings.agentId))
         .where(
           and(
             eq(agents.userId, ctx.auth.user.id),
             search ? ilike(agents.name, `%${search}%`) : undefined
           )
         )
+        .groupBy(agents.id)
         .orderBy(desc(agents.createdAt), desc(agents.id))
         .limit(pageSize)
         .offset((page - 1) * pageSize);
@@ -142,6 +156,9 @@ export const agentRouter = createTRPCRouter({
 
         .returning();
 
-      return createdAgent;
+      return {
+        ...createdAgent,
+        meetingCount: 0,
+      };
     }),
 });

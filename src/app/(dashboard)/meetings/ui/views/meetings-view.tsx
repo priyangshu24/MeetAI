@@ -16,7 +16,7 @@ export const MeetingsView = () => {
     const trpc = useTRPC();
     const router = useRouter();
     const [filters, setFilters] = useMeetingsFilters();
-    const { data } = useSuspenseQuery(trpc.meetings.getMany.queryOptions({
+    const { data } = useSuspenseQuery(trpc.meeting.getMany.queryOptions({
         ...filters,  
     }))
 

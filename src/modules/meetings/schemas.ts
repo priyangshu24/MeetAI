@@ -5,6 +5,7 @@ export const meetingsInertSchema = z.object({
     agentId: z.string().min(1, {message: "Agent is required"}),
 });
 
-export const meetingsUpdateSchema = meetingsInertSchema.extend({
+export const meetingsUpdateSchema = meetingsInertSchema.partial().extend({
     id: z.string().min(1, {message: "ID is required"}),
-})
+    status: z.enum(["upcoming", "active", "completed", "processing", "cancelled"]).optional(),
+});
