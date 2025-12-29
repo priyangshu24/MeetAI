@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { TRPCReactProvider } from "@/trpc/client";
 import { ThemeProvider } from "@/components/theme-provider";
 
+import "@stream-io/video-react-sdk/dist/css/styles.css";
 import "./globals.css";
 
 
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${inter.className} antialiased`}
+        suppressHydrationWarning
       >
         <NuqsAdapter>
           <TRPCReactProvider>

@@ -43,6 +43,138 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+@layer utilities {
+  .glass-morphism {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20;
+  }
+  
+  .glass-morphism-dark {
+    @apply bg-black/60 backdrop-blur-2xl border border-white/10;
+  }
+}
+
+/* Speaker Layout and Participant View Improvements */
+.str-video__speaker-layout {
+  @apply !bg-transparent !p-0;
+}
+
+.str-video__participant-view {
+  @apply !rounded-[32px] !overflow-hidden !border !border-white/10 !bg-[#121212] !transition-all !duration-500;
+}
+
+.str-video__participant-placeholder {
+  @apply !bg-[#0D0D0D];
+}
+
+.str-video__participant-details {
+  @apply !bg-black/60 !backdrop-blur-xl !rounded-2xl !px-4 !py-2 !m-6 !border !border-white/10 !transition-opacity !duration-300;
+}
+
+.str-video__participant-details__name {
+  @apply !text-[13px] !font-bold !text-white/90 !tracking-tight;
+}
+
+/* Network Quality Bars (if using SDK default) */
+.str-video__connection-quality {
+  @apply !bg-black/40 !backdrop-blur-md !rounded-lg !p-1.5;
+}
+
+/* Hide Stream Branding */
+.str-video__stream-branding {
+  @apply !hidden;
+}
+
+/* Control Bar Hover Effects */
+.glass-morphism-dark button {
+  @apply !transition-all !duration-300;
+}
+
+.glass-morphism-dark button:hover {
+  @apply !scale-110 !bg-white/10;
+}
+
+.glass-morphism-dark button:active {
+  @apply !scale-95;
+}
+
+/* Improve Visibility of Control Icons */
+.str-video__participant-menu__button {
+  @apply !bg-white/10 hover:!bg-white/20 !text-white !rounded-lg !p-1.5 !transition-all !border !border-white/20 !flex !items-center !justify-center !size-8 !opacity-100;
+}
+
+.str-video__participant-menu__button svg {
+  @apply !size-4 !fill-current;
+}
+
+/* Stream SDK Overrides */
+.str-video__call-controls {
+  @apply !bg-transparent !border-none !gap-4;
+}
+
+.str-video__participant-view--speaking {
+  @apply !border-emerald-500/50 !ring-4 !ring-emerald-500/20;
+}
+
+/* Device Settings Popover Overrides */
+.str-video__device-settings {
+  @apply !bg-[#1A1A1A] !text-white !border !border-white/10 !rounded-2xl !shadow-2xl !p-4;
+}
+
+.str-video__device-settings__header {
+  @apply !border-b !border-white/5 !pb-3 !mb-3;
+}
+
+.str-video__device-settings__title {
+  @apply !text-sm !font-bold !text-white/90;
+}
+
+.str-video__device-settings__option {
+  @apply !bg-white/5 hover:!bg-white/10 !rounded-xl !p-2 !transition-all !duration-200 !cursor-pointer !mb-2;
+}
+
+.str-video__device-settings__option--active {
+  @apply !bg-emerald-500/10 !border !border-emerald-500/30 !text-emerald-500;
+}
+
+.str-video__device-settings__device-selector {
+  @apply !bg-black/40 !border !border-white/10 !rounded-xl !text-sm !text-white/80 !w-full !p-2 !outline-none focus:!border-emerald-500/50;
+}
+
+/* Ensure the button itself is visible and matches the other buttons */
+.str-video__device-settings__trigger {
+  @apply !bg-white/10 hover:!bg-white/20 !text-white !rounded-full !size-11 !flex !items-center !justify-center !transition-all !duration-300 !border !border-white/10 !p-0 !cursor-pointer !shadow-xl;
+}
+
+.str-video__device-settings__trigger svg {
+  @apply !size-5;
+}
+
+/* Participant Menu / Context Menu Overrides */
+.str-video__menu-container {
+  @apply !bg-[#1A1A1A] !text-white !border !border-white/10 !rounded-2xl !shadow-2xl !p-2 !min-w-[200px];
+}
+
+.str-video__menu-item {
+  @apply !flex !items-center !gap-3 !px-3 !py-2.5 !rounded-xl !transition-all !duration-200 !cursor-pointer hover:!bg-white/5 !text-white/80 hover:!text-white !text-sm;
+}
+
+.str-video__menu-item--active {
+  @apply !bg-emerald-500/10 !text-emerald-500;
+}
+
+.str-video__menu-item svg {
+  @apply !size-4 !text-inherit;
+}
+
+/* Fix for the black square icon/trigger in participant menu */
+.str-video__participant-menu__button {
+  @apply !bg-black/40 hover:!bg-black/60 !text-white/70 hover:!text-white !rounded-lg !p-1.5 !transition-all !border !border-white/10 !flex !items-center !justify-center !size-8;
+}
+
+.str-video__participant-menu__button svg {
+  @apply !size-4;
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(0.96 0.005 149.21);

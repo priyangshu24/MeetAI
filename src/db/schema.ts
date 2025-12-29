@@ -1,5 +1,6 @@
 import { nanoid } from 'nanoid';
 import { pgTable, text, timestamp, boolean, pgEnum, real } from "drizzle-orm/pg-core";
+import { relations } from 'drizzle-orm';
 
 //user table schema
 export const user = pgTable("user", {
@@ -85,6 +86,7 @@ export const meetingStatus = pgEnum("meeting_status" ,[
     "processing",
     "cancelled"
 ]);
+
 export const meetings = pgTable("meetings", {
     id: text('id')
     .primaryKey()
@@ -105,3 +107,15 @@ export const meetings = pgTable("meetings", {
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow()
 });
+
+// Relations
+export const agentsRelations = relations(agents, ({ many }) => ({
+    meetings: many(meetings),
+}));
+
+export const meetingsRelations = relations(meetings, ({ one }) => ({
+    agent: one(agents, {
+        fields: [meetings.agentId],
+        references: [agents.id],
+    }),
+}));

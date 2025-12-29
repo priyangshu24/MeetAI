@@ -40,14 +40,18 @@ export const HomeView = () => {
         open={isMeetingDialogOpen} 
         onOpenChange={setIsMeetingDialogOpen} 
       />
-      <header className="flex items-center justify-between px-8 py-6 max-w-7xl mx-auto w-full relative z-10">
-        <div>
-           <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-primary to-emerald-600">
+      <header className="flex items-center justify-between px-8 py-10 max-w-7xl mx-auto w-full relative z-10">
+        <div className="space-y-1">
+           <h1 className="text-5xl font-black tracking-tighter bg-clip-text text-transparent bg-linear-to-r from-primary via-emerald-500 to-teal-600 drop-shadow-sm">
              Dashboard
            </h1>
-           <p className="text-muted-foreground text-sm">Welcome back to Meet AI</p>
+           <p className="text-muted-foreground text-lg font-medium italic tracking-wide opacity-80">
+             Welcome back to the future of meetings
+           </p>
         </div>
-        <ThemeToggleSwitch />
+        <div className="flex items-center gap-4">
+          <ThemeToggleSwitch />
+        </div>
       </header>
 
       <div className="relative z-10">

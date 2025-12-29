@@ -4,7 +4,7 @@ import { SignInView } from "@/modules/auth/ui/views/sign-in-view";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-const page = async() => {
+const Page = async() => {
     const session = await auth.api.getSession({
         headers: await headers(),
       });
@@ -14,6 +14,6 @@ const page = async() => {
     return <SignInView />
 }
  
-export default page;
+export default Page;
 
 //http://localhost:3000/sign-in

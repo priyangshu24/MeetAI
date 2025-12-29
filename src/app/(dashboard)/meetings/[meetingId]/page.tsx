@@ -17,7 +17,7 @@ const Page = async ({ params }: Props) => {
     const { meetingId } = await params
 
     const queryClient = getQueryClient();
-    void queryClient.prefetchQuery(
+    await queryClient.prefetchQuery(
         trpc.meeting.getOne.queryOptions({ id: meetingId }),
     );
 

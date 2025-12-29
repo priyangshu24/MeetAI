@@ -69,11 +69,16 @@ export const MeetingsIdView = ({ meetingsId }: Props)=> {
         })
     );
 
-    const handleUpdateStatus = (status: "upcoming" | "cancelled" | "completed") => {
+    const handleUpdateStatus = (status: "upcoming" | "cancelled" | "completed" | "active") => {
         updateMutation.mutate({
             id: meetingsId,
             status
         });
+    };
+
+    const handleJoinMeeting = () => {
+        handleUpdateStatus("active");
+        router.push(`/call/${meetingsId}`);
     };
 
     const handleDelete = () => {
@@ -93,6 +98,9 @@ export const MeetingsIdView = ({ meetingsId }: Props)=> {
                     </button>
                     <ChevronRightIcon className="size-4 text-muted-foreground/50" />
                     <span className="font-semibold text-foreground">{meeting.name}</span>
+                    <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-md font-mono">
+                        ID: {meetingsId}
+                    </span>
                 </div>
 
                 <div className="flex items-center gap-x-2">
@@ -215,6 +223,7 @@ export const MeetingsIdView = ({ meetingsId }: Props)=> {
                                 </Button>
                                 <Button 
                                     size="lg"
+                                    onClick={handleJoinMeeting}
                                     className="h-14 flex-1 rounded-2xl font-bold bg-primary hover:bg-primary/90 shadow-2xl shadow-primary/40 transition-all gap-x-2"
                                 >
                                     <PlayIcon className="size-5 fill-current" />
@@ -227,11 +236,11 @@ export const MeetingsIdView = ({ meetingsId }: Props)=> {
                                 <Button 
                                     variant="outline" 
                                     size="lg"
-                                    onClick={() => router.push("/meetings")}
+                                    onClick={() => router.push(`/call/${meetingsId}`)}
                                     className="h-14 flex-1 rounded-2xl border-2 font-bold hover:bg-primary/10 transition-all gap-x-2"
                                 >
-                                    <LogOutIcon className="size-5" />
-                                    Exit View
+                                    <VideoIcon className="size-5" />
+                                    Join Call
                                 </Button>
                                 <Button 
                                     size="lg"
