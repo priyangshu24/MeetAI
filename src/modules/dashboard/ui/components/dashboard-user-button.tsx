@@ -34,43 +34,51 @@ import {
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 
+import { useSidebar } from "@/components/ui/sidebar";
+
 interface UserTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   data: NonNullable<ReturnType<typeof authClient.useSession>["data"]>;
+  state?: "expanded" | "collapsed";
 }
 
 const UserTrigger = forwardRef<HTMLButtonElement, UserTriggerProps>(
-  ({ className, data, ...props }, ref) => (
+  ({ className, data, state, ...props }, ref) => (
     <button
       ref={ref}
       type="button"
       className={cn(
-        "rounded-xl border border-primary/10 p-2.5 w-full flex items-center justify-between bg-primary/5 hover:bg-primary/10 transition-all duration-200 overflow-hidden gap-x-3 cursor-pointer group outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+        "rounded-xl border border-primary/10 transition-all duration-300 bg-primary/5 hover:bg-primary/10 flex items-center group outline-none focus-visible:ring-2 focus-visible:ring-primary/20",
+        state === "collapsed" ? "size-10 p-0 justify-center" : "p-2.5 w-full justify-between gap-x-3",
         className
       )}
       {...props}
     >
-      <div className="flex items-center gap-3 min-w-0 flex-1">
+      <div className={cn("flex items-center min-w-0", state === "collapsed" ? "justify-center" : "gap-3 flex-1")}>
         {data.user.image ? (
-          <Avatar className="size-9 border border-primary/10">
+          <Avatar className={cn("border border-primary/10 transition-all duration-300", state === "collapsed" ? "size-8" : "size-9")}>
             <AvatarImage src={data.user.image} />
           </Avatar>
         ) : (
           <GeneratedAvatar
             seed={data.user.name}
             variant="botttsNetural"
-            className="size-9 shrink-0 shadow-sm"
+            className={cn("shrink-0 shadow-sm transition-all duration-300", state === "collapsed" ? "size-8" : "size-9")}
           />
         )}
-        <div className="flex flex-col text-left overflow-hidden">
-          <p className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">
-            {data.user.name}
-          </p>
-          <p className="text-xs text-muted-foreground truncate font-medium">
-            {data.user.email}
-          </p>
-        </div>
+        {state === "expanded" && (
+          <div className="flex flex-col text-left overflow-hidden">
+            <p className="text-sm font-bold text-foreground truncate group-hover:text-primary transition-colors">
+              {data.user.name}
+            </p>
+            <p className="text-xs text-muted-foreground truncate font-medium">
+              {data.user.email}
+            </p>
+          </div>
+        )}
       </div>
-      <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground group-hover:text-primary transition-colors" />
+      {state === "expanded" && (
+        <ChevronDownIcon className="size-4 shrink-0 text-muted-foreground group-hover:text-primary transition-colors" />
+      )}
     </button>
   )
 );
@@ -79,6 +87,7 @@ UserTrigger.displayName = "UserTrigger";
 export const DashboardUserButton = () => {
   const router = useRouter();
   const isMobile = useIsMobile();
+  const { state } = useSidebar();
   const { data, isPending } = authClient.useSession();
 
   const onLogout = async () => {
@@ -105,7 +114,7 @@ export const DashboardUserButton = () => {
     return (
       <Drawer>
         <DrawerTrigger asChild>
-          <UserTrigger data={data} />
+          <UserTrigger data={data} state={state} />
         </DrawerTrigger>
         <DrawerContent className="rounded-t-[2rem]">
           <DrawerHeader className="pb-4">
@@ -145,12 +154,12 @@ export const DashboardUserButton = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <UserTrigger data={data} />
+        <UserTrigger data={data} state={state} />
       </DropdownMenuTrigger>
       <DropdownMenuContent 
         align="end" 
-        side="right" 
-        sideOffset={12}
+        side={state === "collapsed" ? "right" : "bottom"} 
+        sideOffset={state === "collapsed" ? 20 : 12}
         className="w-72 p-2 rounded-2xl shadow-xl border-primary/10 bg-background/95 backdrop-blur-sm z-[100]"
       >
         <DropdownMenuLabel className="p-3">

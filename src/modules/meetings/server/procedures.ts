@@ -1,12 +1,14 @@
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
 import { db } from "@/db";
-import { and, count, desc, eq, getTableColumns, ilike,sql } from "drizzle-orm";
+import { and, count, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
+import { StreamClient } from "@stream-io/node-sdk";
 
 import { agents, meetings } from "@/db/schema";
 import { createTRPCRouter, protectedProcedure } from "@/trpc/init";
+import { generateAvatarUrl } from "@/components/generated-avatar";
 
-import { meetingsInertSchema, meetingsUpdateSchema } from "../schemas"; 
+import { meetingsInertSchema, meetingsUpdateSchema } from "../schemas";
 
 // CONSTANTS IMPORT
 import {
@@ -17,8 +19,40 @@ import {
 } from "@/constants";
 import { MeetingStatus } from "../types";
 
-
 export const meetingsRouter = createTRPCRouter({
+  generateToken: protectedProcedure
+    .query(async ({ ctx }) => {
+      try {
+        const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY;
+        const apiSecret = process.env.STREAM_API_SECRET;
+
+        if (!apiKey || !apiSecret || apiSecret === "your_secret_here") {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Stream API Key or Secret is missing or invalid. Please set NEXT_PUBLIC_STREAM_API_KEY and STREAM_API_SECRET in .env",
+          });
+        }
+
+        const client = new StreamClient(apiKey, apiSecret);
+        const expirationTime = Math.floor(Date.now() / 1000) + 3600;
+        const issuedAt = Math.floor(Date.now() / 1000) - 60;
+
+        const token = client.generateUserToken({
+          user_id: ctx.auth.user.id,
+          exp: expirationTime,
+          iat: issuedAt,
+        });
+
+        return { token };
+      } catch (error) {
+        console.error("Token generation error:", error);
+        if (error instanceof TRPCError) throw error;
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error instanceof Error ? error.message : "Failed to generate token",
+        });
+      }
+    }),
 
   remove: protectedProcedure
     .input(z.object({ id: z.string() }))
@@ -72,10 +106,41 @@ export const meetingsRouter = createTRPCRouter({
         ...input,
         userId: ctx.auth.user.id,
       })
-
       .returning();
 
-    // TODO: Create Stream Call, Upsert Stream Users
+    if (!createdMeeting) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Failed to create meeting",
+      });
+    }
+
+    // Stream Call Creation
+    const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY;
+    const apiSecret = process.env.STREAM_API_SECRET;
+
+    if (apiKey && apiSecret) {
+      const client = new StreamClient(apiKey, apiSecret);
+      
+      // Upsert Stream User
+      await client.upsertUsers([
+        {
+          id: ctx.auth.user.id,
+          name: ctx.auth.user.name ?? ctx.auth.user.email,
+          image: ctx.auth.user.image ?? generateAvatarUrl(ctx.auth.user.name ?? ctx.auth.user.email),
+        }
+      ]);
+
+      const call = client.video.call("default", createdMeeting.id);
+      await call.getOrCreate({
+        data: {
+          created_by_id: ctx.auth.user.id,
+          custom: {
+            name: createdMeeting.name,
+          }
+        }
+      });
+    }
 
     return createdMeeting;
   }),

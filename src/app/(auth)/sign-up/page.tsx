@@ -6,7 +6,7 @@ import { auth } from "@/lib/auth";
 import { SignUpView } from "@/modules/auth/ui/views/sign-up-view";
 
 
-    const page = async() => {
+    const Page = async() => {
         const session = await auth.api.getSession({
             headers: await headers(),
           });
@@ -15,6 +15,6 @@ import { SignUpView } from "@/modules/auth/ui/views/sign-up-view";
           }
         return <SignUpView />
     }
-export default page;
+export default Page;
 
 //http://localhost:3000/sign-up

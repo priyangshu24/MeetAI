@@ -11,8 +11,9 @@ import { loadSearchParams } from "@/modules/meetings/params";
 import { MeetingsListHeader } from "@/modules/meetings/ui/components/meetings-list-header"; 
 import {  
     MeetingsViewError, 
-    MeetingsViewLoading } from "./ui/views/meetings-view";
-import { MeetingsView } from "@/modules/meetings/ui/views/meetings-view";
+    MeetingsViewLoading,
+    MeetingsView 
+} from "@/modules/meetings/ui/views/meetings-view";
 
 
 interface Props {
